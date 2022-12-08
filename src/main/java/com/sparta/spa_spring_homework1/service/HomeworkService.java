@@ -72,10 +72,8 @@ public class HomeworkService {
             PostEditDTO postEditDTO = new PostEditDTO(homework);
             return postEditDTO;
         }else{
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
 
-
-            System.out.println("비밀번호가 옳지 않습니다");
-            return null;
         }
 
 
