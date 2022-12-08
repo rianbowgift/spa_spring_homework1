@@ -1,5 +1,6 @@
 package com.sparta.spa_spring_homework1.controller;
 
+import com.sparta.spa_spring_homework1.dto.PostAddDTO;
 import com.sparta.spa_spring_homework1.dto.PostEditDTO;
 import com.sparta.spa_spring_homework1.dto.PostListDTO;
 import com.sparta.spa_spring_homework1.dto.PostSelectDTO;
@@ -26,7 +27,7 @@ public class HomeworkController {
 
 
     @PostMapping("/api/addPost/{title}/{username}/{password}/{contents}")
-    public Homework addPost(@PathVariable String title,@PathVariable String username,@PathVariable String password,@PathVariable String contents){
+    public PostAddDTO addPost(@PathVariable String title, @PathVariable String username, @PathVariable String password, @PathVariable String contents){
         return homeworkService.addPost(title,username,password,contents);
     }
 

@@ -1,5 +1,6 @@
 package com.sparta.spa_spring_homework1.service;
 
+import com.sparta.spa_spring_homework1.dto.PostAddDTO;
 import com.sparta.spa_spring_homework1.dto.PostEditDTO;
 import com.sparta.spa_spring_homework1.dto.PostListDTO;
 import com.sparta.spa_spring_homework1.dto.PostSelectDTO;
@@ -37,10 +38,12 @@ public class HomeworkService {
 
     }
     @Transactional
-    public Homework addPost(String title,String username,String password,String contents) {
+    public PostAddDTO addPost(String title, String username, String password, String contents) {
             Homework homework = new Homework(title,username,password,contents);
             homeworkRepository.save(homework);
-            return homework;
+
+            PostAddDTO postAddDTO = new PostAddDTO(homework);
+            return postAddDTO;
 
 
 
