@@ -1,13 +1,11 @@
 package com.sparta.spa_spring_homework1.service;
 
-import com.sparta.spa_spring_homework1.dto.PostAddDTO;
-import com.sparta.spa_spring_homework1.dto.PostEditDTO;
-import com.sparta.spa_spring_homework1.dto.PostListDTO;
-import com.sparta.spa_spring_homework1.dto.PostSelectDTO;
+import com.sparta.spa_spring_homework1.dto.*;
 import com.sparta.spa_spring_homework1.entity.Homework;
 import com.sparta.spa_spring_homework1.repository.HomeworkRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.Cache;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,8 +36,10 @@ public class HomeworkService {
 
     }
     @Transactional
-    public PostAddDTO addPost(String title, String username, String password, String contents) {
-            Homework homework = new Homework(title,username,password,contents);
+    //public PostAddDTO addPost(String title, String username, String password, String contents) {
+    //public PostAddDTO addPost(PostAddInDTO postAddInDTO){
+    public PostAddDTO addPost(Homework homejson){
+            Homework homework = new Homework(homejson);
             homeworkRepository.save(homework);
 
             PostAddDTO postAddDTO = new PostAddDTO(homework);
@@ -61,24 +61,29 @@ public class HomeworkService {
         return postSelectDTO;
     }
     @Transactional
-    public PostEditDTO editPost(Long id, String contents, String password) {
+    public PostEditDTO editPost(Long id, Homework homejson) {
 
         Homework homework = homeworkRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("아이디가 존재하지않음")
         );
 
 
+//        if (homework.getPassword().equals(homejson.getPassword())) {
+//
+//            homework.edit(homejson.getContents());
+//            PostEditDTO postEditDTO = new PostEditDTO(homework);
+//            return postEditDTO;
+//        }else{
+//            //return null;
+//            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
+//
+//        }
+        if (homework.getPassword().equals(homejson.getPassword()))  {
 
-        if (homework.getPassword().equals(password)) {
-
-            homework.edit(contents);
+            homework.edit(homejson.getContents());
             PostEditDTO postEditDTO = new PostEditDTO(homework);
             return postEditDTO;
-        }else{
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
-
-        }
-
+        } throw new IllegalArgumentException("비밀번호가 옳지 않습니다");
 
 
     }
