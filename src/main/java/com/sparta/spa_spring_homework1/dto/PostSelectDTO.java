@@ -1,14 +1,10 @@
 package com.sparta.spa_spring_homework1.dto;
 
-import com.sparta.spa_spring_homework1.entity.Homework;
-import lombok.AllArgsConstructor;
+import com.sparta.spa_spring_homework1.entity.Post;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 @Getter
-@Setter
 public class PostSelectDTO {
 
     private String title;
@@ -17,11 +13,12 @@ public class PostSelectDTO {
     private String contents;
 
 
-    public PostSelectDTO(Homework homework) {
-        this.title = homework.getTitle();
-        this.username = homework.getUsername();
-        this.createdAt = homework.getCreatedAt();
-        this.contents = homework.getContents();
+
+    public PostSelectDTO(Post post) {
+        this.title = post.getTitle();
+        this.username = post.getUsername();
+        this.createdAt = post.getCreatedAt();
+        this.contents = post.getContents();
     }
 
 
