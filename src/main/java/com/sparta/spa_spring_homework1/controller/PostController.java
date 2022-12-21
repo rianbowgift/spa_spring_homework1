@@ -5,6 +5,8 @@ import com.sparta.spa_spring_homework1.entity.Post;
 import com.sparta.spa_spring_homework1.service.PostService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,11 +29,7 @@ public class PostController {
 
     @PostMapping("/api/addPost")
     public ResponseEntity addPost(@RequestBody Post post, HttpServletRequest request){
-        try{
-            return homeworkService.addPost(post,request);
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return homeworkService.addPost(post,request);
 
     }
 
@@ -44,26 +42,23 @@ public class PostController {
 
     @PutMapping("/api/editPost/{id}")
     public ResponseEntity editPost(@PathVariable Long id,@RequestBody Post post,HttpServletRequest request){
-        try{
-            return homeworkService.editPost(id, post,request);
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return homeworkService.editPost(id, post,request);
 
     }
 
 
     @DeleteMapping("/api/deletePost/{id}")
     public ResponseEntity deletePost(@PathVariable Long id, HttpServletRequest request){
-        try{
-            return homeworkService.deletePost(id, request);
-        }catch (IllegalArgumentException e){
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
+        return homeworkService.deletePost(id, request);
 
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity postHandler(IllegalArgumentException e){
 
+        HttpHeaders headers = new HttpHeaders();
+        return new ResponseEntity<>(e.getMessage(),headers,HttpStatus.valueOf(400));
+    }
 
 
 

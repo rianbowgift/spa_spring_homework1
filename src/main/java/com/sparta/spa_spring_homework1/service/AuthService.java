@@ -27,12 +27,12 @@ public class AuthService {
         Claims claims;
 
         if(token == null)  {
-            throw new IllegalArgumentException("로그인 해주세요 (토큰이 존재하지 않습니다)");
+            throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
         }else{
             if(jwtUtil.validateToken(token)){//토큰 검사 성공시
                 claims = jwtUtil.getUserInfoFromToken(token);//토큰에서 사용자 정보 가저오기
             }else{
-                throw new IllegalArgumentException("토큰 에러");
+                throw new IllegalArgumentException("토큰이 유효하지 않습니다.");
             }
         }
 

@@ -1,5 +1,6 @@
 package com.sparta.spa_spring_homework1.service;
 
+import com.sparta.spa_spring_homework1.dto.AdminUseDTO;
 import com.sparta.spa_spring_homework1.dto.ResponseDTO;
 import com.sparta.spa_spring_homework1.dto.UserDTO;
 import com.sparta.spa_spring_homework1.entity.User;
@@ -24,35 +25,40 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
-    private final AuthService authService;
     private final ResponseService responseService;
+    private static final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
 
     @Transactional
     public ResponseEntity signup(UserDTO userDTO) {
+        
+        
+        
         String username = userDTO.getUsername();
         String password = userDTO.getPassword();
 
-        
 
-        //아이디,패스워드 정규표현식(양식에 맞는 정보 확인)
-        String name_reg =  "^[a-z0-9]{4,10}$";
-        String pwd_reg =  "^[A-Za-z0-9]{8,15}$";
-        if(!username.matches(name_reg)){//아이디 정규표현식 체크
-            throw new IllegalArgumentException("잘못된 형식의 아이디 입니다");
-        }
-        if(!password.matches(pwd_reg)){
-            throw new IllegalArgumentException("잘못된 형식의 패스워드 입니다");
-        }
 
+//        //아이디,패스워드 정규표현식(양식에 맞는 정보 확인)
+//        String name_reg =  "^[a-z0-9]{4,10}$";
+//        String pwd_reg =  "^[A-Za-z0-9]{8,15}$";
+//
+//        //String pwd_reg =  "^[a-zA-Z0-9`~!@#$%^&*()-_=+\\|']};:'\",.<>/?]{8,15}$";
+//        if(!username.matches(name_reg)){//아이디 정규표현식 체크
+//            throw new IllegalArgumentException("잘못된 형식의 아이디 입니다");
+//        }
+//        if(!password.matches(pwd_reg)){
+//            throw new IllegalArgumentException("잘못된 형식의 패스워드 입니다");
+//        }
 
 
         //중복회원 확인
         Optional<User> found =userRepository.findByUsername(username);
         if(found.isPresent()){  //옵셔널 기능. ==반환값이 있으면
-            throw new IllegalArgumentException("중복된 사용자가 존재합니다");
+            throw new IllegalArgumentException("중복된 username 입니다.");
         }
 
-        //중복없으면 가입
+
+        //가입
         UserRoleEnum role = UserRoleEnum.USER;
         User user = new User(username,password,role);
         userRepository.save(user);
@@ -73,13 +79,13 @@ public class UserService {
 
         //사용자 등록사실 확인
         User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new IllegalArgumentException("등록된 사용자가 없습니다.")
+                () -> new IllegalArgumentException("회원을 찾을 수 없습니다.")
         );
 
 
         //사용자 등록이 확인됐다면 pw가 맞는지 확인
         if(!user.getPassword().equals(password)){
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
+            throw new IllegalArgumentException("회원을 찾을 수 없습니다.");
         }
 
         //로그인 유저에게 토큰 전송
@@ -89,6 +95,35 @@ public class UserService {
         //반환
         ResponseDTO responseDTO = new ResponseDTO("로그인 성공", HttpStatus.OK);
         return responseService.responseMessage(responseDTO);
+
+    }
+
+    public String adminUse(AdminUseDTO adminUseDTO) {
+        String username = adminUseDTO.getUsername();
+        String password = adminUseDTO.getPassword();
+
+
+        //사용자 등록사실 확인
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new IllegalArgumentException("회원을 찾을 수 없습니다.")
+        );
+
+        //사용자 등록이 확인됐다면 pw가 맞는지 확인
+        if(!user.getPassword().equals(password)){
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다");
+        }
+
+        //어드민 토큰 확인
+        if (!adminUseDTO.getAdminToken().equals(ADMIN_TOKEN)) {
+            return "암호 미일치-권한 획득 실패";
+        }
+
+        //권한변경
+        UserRoleEnum role = UserRoleEnum.ADMIN;
+        user.AdminUse(role);
+        return "권한 변경 성공";
+
+
 
     }
 }

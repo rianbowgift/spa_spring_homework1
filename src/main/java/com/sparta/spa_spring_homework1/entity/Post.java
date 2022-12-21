@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -24,7 +27,11 @@ public class Post extends Timestamped{
 
     @Column(nullable = false)
     private  String username;
-
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    //댓글 의존성무시 같이삭제
+    //@OneToMany(mappedBy = "post")
+    @OrderBy("id desc") // 댓글 정렬
+    private List<Comment> commentList = new ArrayList<>();
 
     public Post(Post post, User user){
         this.title = post.getTitle();
@@ -37,4 +44,5 @@ public class Post extends Timestamped{
         this.title = post.getTitle();
         this.contents = post.getContents();
     }
+
 }
